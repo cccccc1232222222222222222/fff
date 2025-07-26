@@ -295,7 +295,7 @@ body {
 
 #canvas {
   width: 100%;
-  height: 500px;
+  height: 600px;
   background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
   border: none;
   display: block;
@@ -587,10 +587,38 @@ body {
 }
 
 /* Responsive Design */
+@media (min-width: 1400px) {
+  .main-content {
+    grid-template-columns: 1fr 400px;
+    gap: 2.5rem;
+    padding: 2.5rem;
+  }
+  
+  #canvas {
+    height: 700px;
+  }
+  
+  .canvas-section {
+    padding: 2.5rem;
+  }
+  
+  .animation-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
 @media (max-width: 1200px) {
   .main-content {
     grid-template-columns: 1fr 300px;
     gap: 1.5rem;
+  }
+  
+  #canvas {
+    height: 550px;
+  }
+  
+  .animation-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
@@ -614,6 +642,10 @@ body {
   
   .app-title {
     font-size: 1.25rem;
+  }
+  
+  #canvas {
+    height: 500px;
   }
 }
 
@@ -679,8 +711,73 @@ body {
   .chat-send {
     align-self: stretch;
   }
+  
+  #canvas {
+    height: 350px;
+  }
 }
 
+/* Laptop-specific optimizations */
+@media (min-width: 1024px) and (max-width: 1399px) {
+  .main-content {
+    grid-template-columns: 1fr 350px;
+    gap: 2rem;
+    padding: 2rem;
+  }
+  
+  #canvas {
+    height: 600px;
+  }
+  
+  .canvas-section {
+    padding: 2rem;
+  }
+  
+  .control-group {
+    padding: 1.25rem;
+  }
+  
+  .animation-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+  }
+  
+  .animation-btn {
+    padding: 0.6rem;
+    font-size: 0.8rem;
+  }
+  
+  .sidebar-section {
+    margin-bottom: 1rem;
+  }
+  
+  .chat-container {
+    height: 350px;
+  }
+  
+  .user-list {
+    max-height: 180px;
+  }
+}
+
+/* Better canvas scaling for different screen sizes */
+.canvas-container {
+  position: relative;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  aspect-ratio: 16/10;
+  min-height: 350px;
+}
+
+#canvas {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+  border: none;
+  display: block;
+  object-fit: contain;
+}
 /* Special Effects */
 .disco-mode {
   animation: disco 0.5s ease-in-out infinite alternate;

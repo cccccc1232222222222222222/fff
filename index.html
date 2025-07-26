@@ -588,7 +588,7 @@
             scene.background = new THREE.Color(0x1a1a1a);
             
             camera = new THREE.PerspectiveCamera(75, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
-            camera.position.set(0, 1.6, 3);
+            camera.position.set(0, 2, 4);
             
             renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
             renderer.setSize(canvas.clientWidth, canvas.clientHeight);
@@ -596,13 +596,30 @@
             renderer.shadowMap.type = THREE.PCFSoftShadowMap;
             
             // Add lights
-            const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
+            const ambientLight = new THREE.AmbientLight(0x404040, 0.4);
             scene.add(ambientLight);
             
-            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-            directionalLight.position.set(5, 10, 5);
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
+            directionalLight.position.set(10, 10, 5);
             directionalLight.castShadow = true;
+            directionalLight.shadow.mapSize.width = 2048;
+            directionalLight.shadow.mapSize.height = 2048;
+            directionalLight.shadow.camera.near = 0.5;
+            directionalLight.shadow.camera.far = 50;
             scene.add(directionalLight);
+            
+            // Add grid floor
+            const gridHelper = new THREE.GridHelper(20, 20, 0x444444, 0x222222);
+            gridHelper.position.y = -0.01;
+            scene.add(gridHelper);
+            
+            // Add floor plane for shadows
+            const floorGeometry = new THREE.PlaneGeometry(20, 20);
+            const floorMaterial = new THREE.MeshLambertMaterial({ color: 0x111111 });
+            const floor = new THREE.Mesh(floorGeometry, floorMaterial);
+            floor.rotation.x = -Math.PI / 2;
+            floor.receiveShadow = true;
+            scene.add(floor);
             
             clock = new THREE.Clock();
             
@@ -610,11 +627,69 @@
         }
 
         function loadAvatar() {
-            // Simplified avatar loading
-            const geometry = new THREE.BoxGeometry(1, 2, 0.5);
-            const material = new THREE.MeshLambertMaterial({ color: 0x6366f1 });
-            currentAvatar = new THREE.Mesh(geometry, material);
-            currentAvatar.position.set(0, 1, 0);
+            // Create a more detailed humanoid avatar
+            const avatarGroup = new THREE.Group();
+            
+            // Head
+            const headGeometry = new THREE.SphereGeometry(0.3, 16, 16);
+            const headMaterial = new THREE.MeshLambertMaterial({ color: 0xffdd44 });
+            const head = new THREE.Mesh(headGeometry, headMaterial);
+            head.position.set(0, 1.7, 0);
+            head.castShadow = true;
+            avatarGroup.add(head);
+            
+            // Body
+            const bodyGeometry = new THREE.CylinderGeometry(0.3, 0.4, 1.2, 8);
+            const bodyMaterial = new THREE.MeshLambertMaterial({ color: 0xffdd44 });
+            const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
+            body.position.set(0, 0.8, 0);
+            body.castShadow = true;
+            avatarGroup.add(body);
+            
+            // Arms
+            const armGeometry = new THREE.CylinderGeometry(0.1, 0.12, 0.8, 6);
+            const armMaterial = new THREE.MeshLambertMaterial({ color: 0xffdd44 });
+            
+            const leftArm = new THREE.Mesh(armGeometry, armMaterial);
+            leftArm.position.set(-0.5, 0.8, 0);
+            leftArm.castShadow = true;
+            avatarGroup.add(leftArm);
+            
+            const rightArm = new THREE.Mesh(armGeometry, armMaterial);
+            rightArm.position.set(0.5, 0.8, 0);
+            rightArm.castShadow = true;
+            avatarGroup.add(rightArm);
+            
+            // Legs
+            const legGeometry = new THREE.CylinderGeometry(0.12, 0.15, 1.0, 6);
+            const legMaterial = new THREE.MeshLambertMaterial({ color: 0xffdd44 });
+            
+            const leftLeg = new THREE.Mesh(legGeometry, legMaterial);
+            leftLeg.position.set(-0.2, -0.3, 0);
+            leftLeg.castShadow = true;
+            avatarGroup.add(leftLeg);
+            
+            const rightLeg = new THREE.Mesh(legGeometry, legMaterial);
+            rightLeg.position.set(0.2, -0.3, 0);
+            rightLeg.castShadow = true;
+            avatarGroup.add(rightLeg);
+            
+            // Feet
+            const footGeometry = new THREE.BoxGeometry(0.3, 0.1, 0.5);
+            const footMaterial = new THREE.MeshLambertMaterial({ color: 0xffdd44 });
+            
+            const leftFoot = new THREE.Mesh(footGeometry, footMaterial);
+            leftFoot.position.set(-0.2, -0.85, 0.1);
+            leftFoot.castShadow = true;
+            avatarGroup.add(leftFoot);
+            
+            const rightFoot = new THREE.Mesh(footGeometry, footMaterial);
+            rightFoot.position.set(0.2, -0.85, 0.1);
+            rightFoot.castShadow = true;
+            avatarGroup.add(rightFoot);
+            
+            currentAvatar = avatarGroup;
+            currentAvatar.position.set(0, 0.85, 0);
             currentAvatar.castShadow = true;
             scene.add(currentAvatar);
         }
