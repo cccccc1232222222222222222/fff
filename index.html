@@ -1,2137 +1,711 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="description" content="3D Multiplayer Dance Party with Buddy - Chat, Dance, and Have Fun!">
-    <meta name="theme-color" content="#4a86e8">
-    <link rel="icon" type="image/png" href="Buddy.png">
-    <title>Buddy.io</title>
-  <style>
-    body { 
-      margin: 0; 
-      overflow: hidden; 
-      font-family: 'Arial', sans-serif;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      touch-action: manipulation;
-    }
-    
-    #ui-container {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 100;
-    }
-    
-    .panel {
-  background: rgba(20, 20, 20, 0.85); /* deeper black with subtle transparency */
-  color: #e0e8e0; /* Minecraft console green */
-  border: 2px solid #333; /* adds a harder edge */
-  border-radius: 6px;
-  padding: 20px;
-      margin: 10px;
-  box-shadow: 0 0 12px #d8dbd8;
-      pointer-events: auto;
-  text-align: center;
-    }
-    
-   #login-panel {
-  width: 90%;
-  max-width: 320px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  padding: 20px;
-  box-sizing: border-box;
-  background: rgba(20, 20, 20, 0.95);
-  border: 2px solid #4a86e8;
-  border-radius: 12px;
-  box-shadow: 0 0 20px rgba(74, 134, 232, 0.5);
-  text-align: center;
-}
-
-#login-panel h2 {
-  color: #4a86e8;
-  margin-bottom: 20px;
-  font-size: 24px;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-}
-#info-panel {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  width: 40px;
-  height: 40px;
-  background: rgba(20, 20, 20, 0.85);
-  border: 2px solid #333;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  z-index: 1000;
-  pointer-events: auto;
-  color: #4a86e8;
-  font-weight: bold;
-  font-size: 20px;
-  box-shadow: 0 0 8px rgba(0,0,0,0.3);
-}
-
-#info-panel:hover {
-  background: rgba(30, 30, 30, 0.9);
-  transform: scale(1.1);
-}
-
-#info-content {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: rgba(20, 20, 20, 0.95);
-  border: 2px solid #4a86e8;
-  border-radius: 12px;
-  padding: 20px;
-  max-width: 80%;
-  width: 400px;
-  max-height: 80vh;
-  overflow-y: auto;
-  z-index: 1001;
-  display: none;
-  box-shadow: 0 0 20px rgba(0,0,0,0.5);
-  color: white;
-}
-
-#info-content h3 {
-  color: #4a86e8;
-  margin-top: 0;
-  border-bottom: 1px solid #4a86e8;
-  padding-bottom: 10px;
-}
-
-#info-content p {
-  margin-bottom: 15px;
-  line-height: 1.5;
-}
-
-#close-info {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: none;
-  border: none;
-  color: #e0e8e0;
-  font-size: 20px;
-  cursor: pointer;
-}
-
-/* Input field styling */
-#username-input {
-  padding: 12px 15px;
-  margin: 10px 0;
-  border: 2px solid #333;
-  border-radius: 8px;
-  background: rgba(0, 0, 0, 0.4);
-  color: #e0e8e0;
-  font-size: 16px;
-  box-sizing: border-box;
-  /* Remove width: 100% */
-}
-
-#username-input:focus {
-  border-color: #4a86e8;
-  outline: none;
-  box-shadow: 0 0 8px rgba(74, 134, 232, 0.5);
-}
-
-/* Button styling */
-#login-button {
-  background: linear-gradient(135deg, #4a86e8, #3a76d8);
-  color: white;
-  border: none;
-  padding: 12px 25px;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  margin-top: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-}
-
-#login-button:hover {
-  background: linear-gradient(135deg, #5a96f8, #4a86e8);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
-}
-
-#login-button:active {
-  transform: translateY(0);
-}
-    
-    #social-panel {
-      width: 120px;
-      position: absolute;
-      left: 10px;
-      top: 10px;
-      display: none;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      padding: 15px;
-      text-align: center;
-      border-radius: 8px;
-      background: rgba(20, 20, 20, 0.85);
-      color: #e0e8e0;
-      border: 2px solid #333;
-      box-shadow: 0 0 12px #d8dbd8;
-    }
-    
-    #social-panel:hover {
-      background: rgba(30, 30, 30, 0.9);
-      transform: scale(1.05);
-    }
-    
-    #social-panel.expanded {
-      width: 250px;
-      background: rgba(20, 20, 20, 0.95);
-    }
-    
-    #chat-panel {
-      width: 120px;
-      position: absolute;
-      right: 10px;
-      top: 10px;
-      display: none;
-      height: auto;
-      font-family: 'Rubik Glitch', sans-serif;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      padding: 15px;
-      text-align: left;
-      border-radius: 8px;
-      background: rgba(20, 20, 20, 0.85);
-      color: #e0e8e0;
-      border: 2px solid #333;
-      box-shadow: 0 0 12px #d8dbd8;
-    }
-    
-    #chat-panel:hover {
-      background: rgba(30, 30, 30, 0.9);
-      transform: scale(1.05);
-    }
-    
-    #chat-panel.expanded {
-      width: 250px;
-      height: 300px;
-      background: rgba(20, 20, 20, 0.95);
-    }
-    
-    .panel-header {
-      font-weight: bold;
-      margin-bottom: 15px;
-      user-select: none;
-      font-size: 16px;
-      color: #4a86e8;
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
-      border-bottom: 2px solid #4a86e8;
-      padding-bottom: 8px;
-      text-align: center;
-      letter-spacing: 0.5px;
-    }
-    
-    /* Ensure chat content is left-aligned */
-    #chat-content {
-      text-align: left;
-    }
-    
-    .panel-content {
-      display: none;
-    }
-    
-    .panel-content.show {
-      display: block;
-    }
-    
-    #controls {
-      position: absolute;
-      bottom: 10px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: none;
-    }
-    
-    #user-list {
-      max-height: 200px;
-      overflow-y: auto;
-    }
-    
-    .user-item {
-      padding: 5px;
-      cursor: pointer;
-      border-radius: 4px;
-    }
-    
-    .user-item:hover {
-      background: rgba(255, 255, 255, 0.2);
-    }
-    
-    .user-item.selected {
-      background: rgba(0, 150, 255, 0.5);
-    }
-    
-    #chat-messages {
-      height: 200px;
-      overflow-y: auto;
-      margin-bottom: 10px;
-      padding: 10px;
-      background: rgba(0, 0, 0, 0.3);
-      border-radius: 6px;
-      border: 1px solid #444;
-    }
-    
-    .message {
-      margin: 8px 0;
-      padding: 8px 12px;
-      word-wrap: break-word;
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.1);
-      border-left: 3px solid #4a86e8;
-      font-size: 14px;
-      line-height: 1.4;
-      color: #e0e8e0;
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-    }
-    
-    .message strong {
-      color: #4a86e8;
-      font-weight: bold;
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
-    }
-    
-    /* Chat input styling */
-    #chat-input {
-      flex: 1;
-      padding: 10px 12px;
-      border: 2px solid #444;
-      border-radius: 6px;
-      background: rgba(0, 0, 0, 0.4);
-      color: #e0e8e0;
-      font-size: 14px;
-      font-family: 'Arial', sans-serif;
-      outline: none;
-      transition: all 0.3s ease;
-      margin-right: 8px;
-    }
-    
-    #chat-input:focus {
-      border-color: #4a86e8;
-      box-shadow: 0 0 8px rgba(74, 134, 232, 0.3);
-      background: rgba(0, 0, 0, 0.6);
-    }
-    
-    #chat-input::placeholder {
-      color: #888;
-      font-style: italic;
-    }
-    
-    /* Send button styling */
-    #send-button {
-      width: 35px;
-      height: 35px;
-      border: 2px solid #4a86e8;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #4a86e8, #3a76d8);
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    }
-    
-    #send-button:hover {
-      background: linear-gradient(135deg, #5a96f8, #4a86e8);
-      transform: scale(1.05);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
-    }
-    
-    #send-button:active {
-      transform: scale(0.95);
-    }
-    
-    /* Left-align Buddy's messages in the AI chat panel */
-    #ai-chat-panel .message {
-      text-align: left;
-    }
-    .ai-message {
-      text-align: left;
-    }
-    
-    /* AI Chat specific styling */
-    #ai-chat-panel {
-      background: rgba(20, 20, 20, 0.95);
-      border: 2px solid #4a86e8;
-      box-shadow: 0 0 15px rgba(74, 134, 232, 0.3);
-    }
-    
-    #ai-chat-panel h3 {
-      color: #4a86e8;
-      text-align: center;
-      margin-bottom: 15px;
-      font-size: 18px;
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
-      border-bottom: 2px solid #4a86e8;
-      padding-bottom: 8px;
-    }
-    
-    #ai-chat-input {
-      width: calc(100% - 40px);
-      padding: 10px 12px;
-      border: 2px solid #444;
-      border-radius: 6px;
-      background: rgba(0, 0, 0, 0.4);
-      color: #e0e8e0;
-      font-size: 14px;
-      font-family: 'Arial', sans-serif;
-      outline: none;
-      transition: all 0.3s ease;
-      margin-bottom: 8px;
-    }
-    
-    #ai-chat-input:focus {
-      border-color: #4a86e8;
-      box-shadow: 0 0 8px rgba(74, 134, 232, 0.3);
-      background: rgba(0, 0, 0, 0.6);
-    }
-    
-    #ai-chat-input::placeholder {
-      color: #888;
-      font-style: italic;
-    }
-    
-    #ai-send-button {
-      width: 35px;
-      height: 35px;
-      border: 2px solid #4a86e8;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #4a86e8, #3a76d8);
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-left: 5px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    }
-    
-    #ai-send-button:hover {
-      background: linear-gradient(135deg, #5a96f8, #4a86e8);
-      transform: scale(1.05);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
-    }
-    
-    #ai-send-button:active {
-      transform: scale(0.95);
-    }
-    
-    /* Add new styles for mode toggle */
-    #mode-toggle-container {
-      position: absolute;
-      top: 10px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 1000;
-      display: flex;
-      background: rgba(20, 20, 20, 0.85);
-      border: 2px solid #333;
-      border-radius: 25px;
-      padding: 5px;
-      box-shadow: 0 0 12px #d8dbd8;
-      pointer-events: auto;
-    }
-    
-    .mode-btn {
-      padding: 8px 20px;
-      border: none;
-      background: transparent;
-      color: #e0e8e0;
-      cursor: pointer;
-      border-radius: 20px;
-      font-weight: bold;
-      transition: all 0.3s ease;
-    }
-    
-    .mode-btn.active {
-      background: #4a86e8;
-      box-shadow: 0 0 8px rgba(74, 134, 232, 0.7);
-    }
-    
-    .mode-btn:hover:not(.active) {
-      background: rgba(74, 134, 232, 0.3);
-    }
-    
-    .mode-indicator {
-      position: absolute;
-      top: 50%;
-      left: 10px;
-      transform: translateY(-50%);
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background-color: #4CAF50;
-      box-shadow: 0 0 8px #4CAF50;
-    }
-    
-    .mode-indicator.single {
-      background-color: #FF9800;
-      box-shadow: 0 0 8px #FF9800;
-    }
-    
-    .mode-indicator.world {
-      background-color: #4CAF50;
-      box-shadow: 0 0 8px #4CAF50;
-    }
-    
-    .mode-label {
-      margin-left: 20px;
-      font-size: 14px;
-      display: flex;
-      align-items: center;
-      color: #e0e8e0;
-    }
-    
-    /* Responsive Design - Mobile First Approach */
-    
-    /* Small Mobile Screens (320px - 480px) */
-@media screen and (max-width: 480px) {
-  #login-panel {
-    width: 85%;
-    padding: 15px;
-  }
-  
-  #login-panel h2 {
-    font-size: 20px;
-    margin-bottom: 15px;
-  }
-  
-  #username-input {
-    width: 140px; /* Smaller width for mobile */
-    padding: 10px 12px;
-    font-size: 14px;
-  }
-  
-  #login-button {
-    padding: 10px 20px;
-    font-size: 14px;
-  }
-}
-      #social-panel {
-        width: 18vw;
-        min-width: 40px;
-        max-width: 60px;
-        left: 2vw;
-        top: 2vw;
-        padding: 3px;
-      }
-      #social-panel.expanded {
-        width: 36vw;
-        min-width: 80px;
-        max-width: 110px;
-      }
-      #chat-panel {
-        width: 18vw;
-        min-width: 40px;
-        max-width: 60px;
-        right: 2vw;
-        top: 2vw;
-        padding: 3px;
-      }
-      #chat-panel.expanded {
-        width: 36vw;
-        min-width: 80px;
-        max-width: 110px;
-        height: 80vw;
-        max-height: 180px;
-      }
-      #ai-chat-panel {
-        width: 40vw;
-        min-width: 90px;
-        max-width: 130px;
-        left: 2vw;
-        bottom: 2vw;
-        padding: 3px;
-      }
-      #ai-chat-messages {
-        height: 40vw;
-        min-height: 30px;
-        max-height: 60px;
-      }
-      #ai-chat-panel h3 {
-        font-size: 11px;
-        margin-bottom: 4px;
-      }
-      #mode-toggle-container {
-        top: 1vw;
-        padding: 1px;
-        border-radius: 10px;
-      }
-      .mode-btn {
-        padding: 2px 5px;
-        font-size: 9px;
-      }
-      .mode-label {
-        font-size: 9px;
-        margin-left: 5px;
-        color: #e0e8e0;
-      }
-      .panel-header {
-        font-size: 10px;
-        margin-bottom: 4px;
-        padding-bottom: 2px;
-      }
-      #chat-messages {
-        height: 18vw;
-        min-height: 20px;
-        max-height: 40px;
-        padding: 2px;
-      }
-      .message {
-        font-size: 9px;
-        padding: 2px 4px;
-        margin: 1px 0;
-      }
-      #chat-input, #ai-chat-input {
-        padding: 2px 4px;
-        font-size: 9px;
-      }
-      #send-button, #ai-send-button {
-        width: 16px;
-        height: 16px;
-        font-size: 9px;
-      }
-      #user-list {
-        max-height: 40vw;
-        min-height: 20px;
-        max-height: 40px;
-      }
-      .user-item {
-        padding: 2px;
-        font-size: 9px;
-      }
-    }
-    
-    /* Medium Mobile Screens (481px - 768px) */
-    @media screen and (min-width: 481px) and (max-width: 768px) {
-      #login-panel {
-        width: 300px;
-        top: 45%;
-        transform: translate(-50%, -45%);
-      }
-      
-      #social-panel {
-        width: 90px;
-        left: 8px;
-        top: 8px;
-      }
-      
-      #social-panel.expanded {
-        width: 180px;
-      }
-      
-      #chat-panel {
-        width: 90px;
-        right: 8px;
-        top: 8px;
-      }
-      
-      #chat-panel.expanded {
-        width: 180px;
-        height: 220px;
-      }
-      
-      #ai-chat-panel {
-        width: 240px;
-        left: 8px;
-        bottom: 8px;
-      }
-      
-      #mode-toggle-container {
-        top: 8px;
-      }
-      
-      .mode-btn {
-        padding: 7px 15px;
-        font-size: 13px;
-      }
-      
-      #chat-messages {
-        height: 140px;
-      }
-      
-      .message {
-        font-size: 12px;
-      }
-    }
-    
-    /* Large Mobile/Tablet Screens (769px - 1024px) */
-    @media screen and (min-width: 769px) and (max-width: 1024px) {
-      #login-panel {
-        width: 320px;
-      }
-      
-      #social-panel {
-        width: 120px;
-        left: 10px;
-        top: 10px;
-      }
-      
-      #social-panel.expanded {
-        width: 240px;
-      }
-      
-      #chat-panel {
-        width: 120px;
-        right: 10px;
-        top: 10px;
-      }
-      
-      #chat-panel.expanded {
-        width: 240px;
-        height: 300px;
-      }
-      
-      #ai-chat-panel {
-        width: 300px;
-        left: 10px;
-        bottom: 10px;
-      }
-      
-      #mode-toggle-container {
-        top: 10px;
-      }
-      
-      .mode-btn {
-        padding: 8px 18px;
-        font-size: 14px;
-      }
-    }
-    
-    /* Desktop Screens (1025px and above) */
-    @media screen and (min-width: 1025px) {
-      #login-panel {
-        width: 350px;
-      }
-      
-      #social-panel {
-        width: 130px;
-        left: 15px;
-        top: 15px;
-      }
-      
-      #social-panel.expanded {
-        width: 260px;
-      }
-      
-      #chat-panel {
-        width: 130px;
-        right: 15px;
-        top: 15px;
-      }
-      
-      #chat-panel.expanded {
-        width: 260px;
-        height: 320px;
-      }
-      
-      #ai-chat-panel {
-        width: 320px;
-        left: 15px;
-        bottom: 15px;
-      }
-      
-      #mode-toggle-container {
-        top: 15px;
-      }
-      
-      .mode-btn {
-        padding: 10px 22px;
-        font-size: 15px;
-      }
-    }
-    
-    /* Landscape Mobile Orientation */
-    @media screen and (max-height: 500px) and (orientation: landscape) {
-      #login-panel {
-        top: 30%;
-        transform: translate(-50%, -30%);
-        padding: 10px;
-      }
-      
-      #login-panel h2 {
-        font-size: 18px;
-        margin-bottom: 10px;
-      }
-      
-      #ai-chat-panel {
-        bottom: 5px;
-        height: auto;
-      }
-      
-      #ai-chat-messages {
-        height: 80px;
-      }
-      
-      #chat-panel.expanded {
-        height: 200px;
-      }
-      
-      #chat-messages {
-        height: 120px;
-      }
-    }
-    
-    /* Touch-friendly improvements for mobile */
-    @media (hover: none) and (pointer: coarse) {
-      .mode-btn:hover {
-        background: rgba(74, 134, 232, 0.3);
-        transform: none;
-      }
-      
-      #send-button:hover, #ai-send-button:hover {
-        transform: none;
-      }
-      
-      .user-item:hover {
-        background: rgba(255, 255, 255, 0.1);
-      }
-      
-      #social-panel:hover, #chat-panel:hover {
-        transform: none;
-      }
-    }
-    
-    /* High DPI displays */
-    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-      .panel {
-        border-width: 1px;
-      }
-      
-      #send-button, #ai-send-button {
-        border-width: 1px;
-      }
-    }
-    
-    /* Accessibility improvements */
-    @media (prefers-reduced-motion: reduce) {
-      * {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-      }
-    }
-    
-    /* Dark mode support */
-    @media (prefers-color-scheme: dark) {
-      .panel {
-        background: rgba(10, 10, 10, 0.9);
-        border-color: #555;
-      }
-      
-      #chat-input, #ai-chat-input {
-        background: rgba(0, 0, 0, 0.6);
-        border-color: #555;
-      }
-    }
-    
-    /* Loading screen responsive styling */
-    #loading {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.9);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      color: white;
-      z-index: 10000;
-      font-family: 'Arial', sans-serif;
-    }
-    
-    #loading div {
-      margin: 10px 0;
-      font-size: 18px;
-      text-align: center;
-    }
-    
-    #progress {
-      width: 200px;
-      height: 20px;
-      border-radius: 10px;
-      background: #333;
-      border: none;
-      outline: none;
-    }
-    
-    #progress::-webkit-progress-bar {
-      background: #333;
-      border-radius: 10px;
-    }
-    
-    #progress::-webkit-progress-value {
-      background: linear-gradient(90deg, #4a86e8, #3a76d8);
-      border-radius: 10px;
-    }
-    
-    #progress::-moz-progress-bar {
-      background: linear-gradient(90deg, #4a86e8, #3a76d8);
-      border-radius: 10px;
-    }
-    
-    /* Loading screen responsive */
-    @media screen and (max-width: 480px) {
-      #loading div {
-        font-size: 16px;
-        margin: 8px 0;
-      }
-      
-      #progress {
-        width: 150px;
-        height: 15px;
-      }
-    }
-    
-    @media screen and (min-width: 481px) and (max-width: 768px) {
-      #loading div {
-        font-size: 17px;
-      }
-      
-      #progress {
-        width: 180px;
-        height: 18px;
-      }
-    }
-    
-    @media screen and (max-width: 600px) {
-      body.mobile-login-active #social-panel,
-      body.mobile-login-active #chat-panel,
-      body.mobile-login-active #ai-chat-panel,
-      body.mobile-login-active #mode-toggle-container {
-        display: none !important;
-      }
-      /* Social and chat panels as small vertical buttons on the left */
-      #social-panel {
-        position: fixed !important;
-        top: 10vw !important;
-        left: 2vw !important;
-        width: 18vw !important;
-        min-width: 60px !important;
-        max-width: 90px !important;
-        height: 12vw !important;
-        min-height: 40px !important;
-        max-height: 60px !important;
-        border-radius: 14px !important;
-        font-size: 12px !important;
-        box-shadow: 0 2px 8px #0006 !important;
-        z-index: 2000 !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        text-align: center !important;
-        margin: 0 !important;
-        padding: 0 !important;
-      }
-      #chat-panel {
-        position: fixed !important;
-        top: 28vw !important;
-        left: 2vw !important;
-        width: 18vw !important;
-        min-width: 60px !important;
-        max-width: 90px !important;
-        height: 12vw !important;
-        min-height: 40px !important;
-        max-height: 60px !important;
-        border-radius: 14px !important;
-        font-size: 12px !important;
-        box-shadow: 0 2px 8px #0006 !important;
-        z-index: 2000 !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        text-align: center !important;
-        margin: 0 !important;
-        padding: 0 !important;
-      }
-      #social-panel.expanded, #chat-panel.expanded {
-        width: 60vw !important;
-        min-width: 120px !important;
-        max-width: 220px !important;
-        height: 30vh !important;
-        min-height: 90px !important;
-        max-height: 220px !important;
-        display: block !important;
-        align-items: flex-start !important;
-        justify-content: flex-start !important;
-        padding: 8px 8px 8px 8px !important;
-        text-align: left !important;
-      }
-      /* AI chat panel floating at bottom right */
-      #ai-chat-panel {
-        position: fixed !important;
-        bottom: 2vw !important;
-        right: 2vw !important;
-        width: 60vw !important;
-        min-width: 120px !important;
-        max-width: 320px !important;
-        height: 30vh !important;
-        min-height: 90px !important;
-        max-height: 220px !important;
-        border-radius: 18px !important;
-        font-size: 13px !important;
-        box-shadow: 0 2px 12px #0008 !important;
-        z-index: 2000 !important;
-        display: block !important;
-        background: rgba(20,20,20,0.92) !important;
-        margin: 0 !important;
-        padding: 10px 10px 10px 10px !important;
-      }
-      #ai-chat-panel h3, .panel-header {
-        font-size: 15px !important;
-        margin-bottom: 6px !important;
-        padding-bottom: 2px !important;
-        text-align: center !important;
-      }
-      #chat-messages, #ai-chat-messages {
-        max-height: 14vh !important;
-        min-height: 30px !important;
-        overflow-y: auto !important;
-        font-size: 12px !important;
-        padding: 4px 2px !important;
-        margin-bottom: 4px !important;
-      }
-      .message {
-        font-size: 12px !important;
-        padding: 3px 6px !important;
-        margin: 2px 0 !important;
-        border-radius: 7px !important;
-      }
-      #chat-content > div[style*="display: flex"], #ai-chat-panel > div[style*="display: flex"] {
-        display: flex !important;
-        gap: 4px !important;
-        align-items: center !important;
-        margin-top: 4px !important;
-      }
-      #chat-input, #ai-chat-input {
-        font-size: 12px !important;
-        padding: 6px 8px !important;
-        border-radius: 8px !important;
-        flex: 1 1 0% !important;
-      }
-      #send-button, #ai-send-button {
-        width: 28px !important;
-        height: 28px !important;
-        font-size: 14px !important;
-        border-radius: 50% !important;
-        min-width: 28px !important;
-        min-height: 28px !important;
-        margin: 0 !important;
-      }
-      /* Hide box shadows and borders for less clutter */
-      .panel, #ai-chat-panel, #chat-panel {
-        box-shadow: none !important;
-        border: none !important;
-      }
-    }
-  </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buddy.io - Virtual Avatar World</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="icon" href="Buddy.png" type="image/png">
+    <meta name="description" content="Join Buddy.io - A virtual avatar world where you can interact, chat, and express yourself with animated characters.">
+    <meta name="theme-color" content="#6366f1">
 </head>
 <body>
-  <!-- UI Elements -->
-  <div id="ui-container">
-    <!-- Add mode toggle bar -->
-    <div id="mode-toggle-container">
-      <div class="mode-indicator world" id="mode-indicator"></div>
-      <div class="mode-label">Mode:</div>
-      <button id="world-mode-btn" class="mode-btn active">World Mode</button>
-      <button id="single-mode-btn" class="mode-btn">Single Mode</button>
-    </div>
-      <div id="info-panel">i</div>
-<div id="info-content">
-  <button id="close-info">&times;</button>
-  <h3>Buddy.io Info</h3>
-  <p><strong>Single Mode:</strong> In a single-player mode only you can interact with your avatar in a private space.</p>
-  <p><strong>World Mode:</strong> In this mode, any user who has opted the world mode can join and interact with you and chat . It's a shared space designed for multiplayer fun.</p>
-  <p><strong>Note:</strong> The user interface supports up to 3 avatars in world mode and right now is designed for big screens interfaces. Anyone can join—have fun!</p>
-</div>
-    
-<div id="login-panel" class="panel">
-  <h2>WeLcome to Buddyyy !!</h2>
-  <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
-    <label for="username-input" style="white-space: nowrap;">Buddy Name :</label>
-    <input type="text" id="username-input" placeholder="ABC...." style="width: 180px;">
-  </div>
-  <div>
-    <button id="login-button">Talk to buddy</button>
-  </div>
-</div>
-    <div id="social-panel" class="panel">
-      <div class="panel-header">Online Players</div>
-      <div class="panel-content" id="social-content">
-        <div id="user-list"></div>
-      </div>
-    </div>
-    
-    <div id="chat-panel" class="panel">
-      <div class="panel-header">Chat with online players</div>
-      <div class="panel-content" id="chat-content">
-        <div id="chat-messages"></div>
-        <div style="display: flex; align-items: center;">
-          <input type="text" id="chat-input" placeholder="Type a message...">
-          <button id="send-button">&#x27A4;</button>
+    <!-- Landing Page -->
+    <div id="landingPage" class="landing-container">
+        <div class="hero-section">
+            <img src="Buddy.png" alt="Buddy.io Logo" class="logo">
+            <h1 class="hero-title">Buddy.io</h1>
+            <p class="hero-subtitle">Enter a virtual world where avatars come alive</p>
+            
+            <form class="login-form" id="loginForm">
+                <div class="form-group">
+                    <label for="username" class="form-label">Choose Your Username</label>
+                    <input 
+                        type="text" 
+                        id="username" 
+                        class="form-input" 
+                        placeholder="Enter your unique username..."
+                        minlength="3" 
+                        maxlength="20" 
+                        required
+                        autocomplete="username"
+                    >
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <span>Enter the World</span>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </button>
+                <div id="errorMessage" class="error-message hidden"></div>
+            </form>
         </div>
-      </div>
     </div>
-    
-    <div id="controls" class="panel">
- 
 
+    <!-- Main Application -->
+    <div id="mainApp" class="app-container">
+        <header class="app-header">
+            <h1 class="app-title">Buddy.io</h1>
+            <div class="user-info">
+                <span class="username-display" id="currentUsername"></span>
+                <button class="btn btn-secondary" id="logoutBtn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>
+                    </svg>
+                    Logout
+                </button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <section class="canvas-section">
+                <div class="canvas-container">
+                    <canvas id="canvas"></canvas>
+                </div>
+                
+                <div class="controls-section">
+                    <!-- Mode Toggle -->
+                    <div class="control-group">
+                        <h3 class="control-title">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="3"/>
+                                <path d="M12 1v6m0 6v6m11-7h-6m-6 0H1"/>
+                            </svg>
+                            View Mode
+                        </h3>
+                        <div class="mode-toggle">
+                            <button class="mode-btn active" id="singleModeBtn">Single Mode</button>
+                            <button class="mode-btn" id="worldModeBtn">World Mode</button>
+                        </div>
+                    </div>
+
+                    <!-- Animation Controls -->
+                    <div class="control-group">
+                        <h3 class="control-title">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="5,3 19,12 5,21"/>
+                            </svg>
+                            Animations
+                        </h3>
+                        <div class="animation-grid">
+                            <button class="animation-btn" data-animation="Standing Idle.fbx">Idle</button>
+                            <button class="animation-btn" data-animation="Standing Greeting.fbx">Greeting</button>
+                            <button class="animation-btn" data-animation="Sitting Laughing.fbx">Laughing</button>
+                            <button class="animation-btn" data-animation="Jumping Down.fbx">Jumping</button>
+                            <button class="animation-btn" data-animation="Laying.fbx">Laying</button>
+                            <button class="animation-btn" data-animation="Chicken Dance.fbx">Dance</button>
+                        </div>
+                    </div>
+
+                    <!-- Special Effects -->
+                    <div class="control-group">
+                        <h3 class="control-title">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="5"/>
+                                <line x1="12" y1="1" x2="12" y2="3"/>
+                                <line x1="12" y1="21" x2="12" y2="23"/>
+                                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                                <line x1="1" y1="12" x2="3" y2="12"/>
+                                <line x1="21" y1="12" x2="23" y2="12"/>
+                                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                            </svg>
+                            Special Effects
+                        </h3>
+                        <div class="animation-grid">
+                            <button class="animation-btn" id="discoBtn">Disco Mode</button>
+                            <button class="animation-btn" id="sparkleBtn">Sparkles</button>
+                            <button class="animation-btn" id="rainbowBtn">Rainbow</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <aside class="sidebar">
+                <!-- Chat Section -->
+                <div class="sidebar-section">
+                    <div class="sidebar-header">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline; margin-right: 0.5rem;">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                        </svg>
+                        Global Chat
+                    </div>
+                    <div class="sidebar-content">
+                        <div class="chat-container">
+                            <div class="chat-messages" id="chatMessages">
+                                <div class="chat-message">
+                                    <div class="chat-username">System</div>
+                                    <div class="chat-text">Welcome to Buddy.io! Start chatting with other users.</div>
+                                </div>
+                            </div>
+                            <div class="chat-input-container">
+                                <input 
+                                    type="text" 
+                                    class="chat-input" 
+                                    id="chatInput" 
+                                    placeholder="Type your message..."
+                                    maxlength="500"
+                                >
+                                <button class="chat-send" id="chatSend">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="22" y1="2" x2="11" y2="13"/>
+                                        <polygon points="22,2 15,22 11,13 2,9"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Online Users -->
+                <div class="sidebar-section">
+                    <div class="sidebar-header">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline; margin-right: 0.5rem;">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                        </svg>
+                        Online Users (<span id="userCount">0</span>)
+                    </div>
+                    <div class="sidebar-content">
+                        <div class="user-list" id="userList">
+                            <!-- Users will be populated here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Status Panel -->
+                <div class="sidebar-section">
+                    <div class="sidebar-header">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline; margin-right: 0.5rem;">
+                            <circle cx="12" cy="12" r="3"/>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                        </svg>
+                        Status
+                    </div>
+                    <div class="sidebar-content">
+                        <div class="status-info">
+                            <div class="status-item">
+                                <span class="status-label">Connection:</span>
+                                <span class="status-value" id="connectionStatus">Connected</span>
+                            </div>
+                            <div class="status-item">
+                                <span class="status-label">Mode:</span>
+                                <span class="status-value" id="currentMode">Single</span>
+                            </div>
+                            <div class="status-item">
+                                <span class="status-label">Animation:</span>
+                                <span class="status-value" id="currentAnimation">Idle</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </main>
     </div>
-    
-    <!-- Add this below the other panels -->
-    <div id="ai-chat-panel" class="panel" style="position: absolute; bottom: 60px; left: 10px; width: 300px; display: none;">
-      <h3>Talk with Buddy</h3>
-      <div id="ai-chat-messages" style="height: 150px; overflow-y: auto; margin-bottom: 10px;"></div>
-      <div style="display: flex;">
-        <input type="text" id="ai-chat-input" placeholder="Chat with Buddy..." style="flex-grow: 1;">
-        <button id="ai-send-button" style="margin-left: 5px;">&#x27A4;</button>
-      </div>
-    </div>
-  </div>
 
-  <!-- Loading Screen -->
-  <div id="loading">
-    <div>Loading 3D viewer...</div>
-    <div id="status">Initializing</div>
-    <progress id="progress" value="0" max="100"></progress>
-  </div>
+    <!-- Scripts -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="FBXLoader.js"></script>
+    <script src="Inflate.min.js"></script>
+    
+    <script>
+        // Global variables
+        let socket;
+        let scene, camera, renderer, mixer, clock;
+        let currentAvatar = null;
+        let currentAnimation = null;
+        let avatars = {};
+        let currentMode = 'single';
+        let currentUsername = '';
+        let isRegistered = false;
 
-  <!-- Three.js will render here -->
-  
-  <!-- Libraries -->
-  <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/fflate@0.7.4/umd/index.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/loaders/FBXLoader.js"></script>
-  <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
-  
-  <script>
-    // Add this at the top of your script (before DOMContentLoaded)
-    if (window.innerWidth <= 600) {
-      document.body.classList.add('mobile-login-active');
-    }
+        // DOM elements
+        const landingPage = document.getElementById('landingPage');
+        const mainApp = document.getElementById('mainApp');
+        const loginForm = document.getElementById('loginForm');
+        const usernameInput = document.getElementById('username');
+        const errorMessage = document.getElementById('errorMessage');
+        const currentUsernameDisplay = document.getElementById('currentUsername');
+        const chatMessages = document.getElementById('chatMessages');
+        const chatInput = document.getElementById('chatInput');
+        const chatSend = document.getElementById('chatSend');
+        const userList = document.getElementById('userList');
+        const userCount = document.getElementById('userCount');
+        const connectionStatus = document.getElementById('connectionStatus');
+        const currentModeDisplay = document.getElementById('currentMode');
+        const currentAnimationDisplay = document.getElementById('currentAnimation');
 
-    // Global variables
-    let scene, camera, renderer, mixer, clock;
-    let avatarModels = {};
-    let currentUser = null;
-    let selectedUser = null;
-    let lastPosition = null;
-    let nameLabels = {}; // Store username labels above avatars
-    let discoLights = []; // Store disco lights
-    let isDiscoMode = false; // Track if disco mode is active
-    let aiChatEnabled = false;
-    let isAnimationTimerActive = false; // Flag to prevent infinite loops
-    let currentMode = 'single'; // 'world' or 'single'
-    const animationCommands = {
-      'dance': 'C',
-      'jump': 'J',
-      'lay': 'L',
-      'sleep': 'L',
-      'laugh': 'S',
-      'hello': 'H',
-      'greet': 'H',
-      'hi': 'H',
-      'idle': 'I',
-      'stand': 'I'
-    };
-    const socket = io(window.location.origin, {
-      withCredentials: true,
-      transports: ['websocket'] // Force WebSocket transport
-    });
-    
-    // Initialize the 3D scene
-    function initScene() {
-      // Scene setup
-      scene = new THREE.Scene();
-      scene.background = new THREE.Color(0x000000);
-      
-      // Camera setup - position it to see the line of avatars
-      camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-      camera.position.set(0, 2.5, 8);
-      camera.lookAt(0, 2, 0);
-      
-      // Renderer setup
-      renderer = new THREE.WebGLRenderer({ antialias: true });
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      document.body.appendChild(renderer.domElement);
-      
-      // Lighting
-      const ambientLight = new THREE.AmbientLight(0x404040);
-      scene.add(ambientLight);
-      
-      const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-      directionalLight.position.set(1, 1, 1);
-      scene.add(directionalLight);
-      
-      // Grid helper
-      scene.add(new THREE.GridHelper(10, 10));
-      
-      // Clock for animations
-      clock = new THREE.Clock();
-      
-      // Handle window resize
-      window.addEventListener('resize', () => {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-      });
-    }
-    
-    // Function to create disco lights
-    function createDiscoLights() {
-      const colors = [0xff0000, 0x00ff00, 0x0000ff, 0xffff00];
-      
-      for (let i = 0; i < colors.length; i++) {
-        const light = new THREE.PointLight(colors[i], 1, 10);
-        light.position.set(0, 3, Math.cos(i) * 3);
-        scene.add(light);
-        discoLights.push(light);
-      }
-    }
-    
-    // Function to remove disco lights
-    function removeDiscoLights() {
-      discoLights.forEach(light => {
-        scene.remove(light);
-      });
-      discoLights = [];
-    }
-    
-    // Function to animate disco lights
-    function animateDiscoLights() {
-      const time = clock.getElapsedTime();
-      
-      discoLights.forEach((light, index) => {
-        light.position.x = Math.sin(time + index) * 5;
-        light.position.z = Math.cos(time + index) * 5;
-        light.intensity = Math.abs(Math.sin(time * 2 + index)); // Pulsing effect
-      });
-    }
-    
-    // Add this function
-    function createDanceParticles(intensity) {
-      const particleCount = Math.floor(50 * intensity);
-      const colors = [0xff0000, 0x00ff00, 0x0000ff, 0xffff00];
-      
-      for (let i = 0; i < particleCount; i++) {
-        const geometry = new THREE.SphereGeometry(0.1, 8, 8);
-        const material = new THREE.MeshBasicMaterial({
-          color: colors[Math.floor(Math.random() * colors.length)]
+        // Initialize application
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeSocketConnection();
+            setupEventListeners();
+            initializeThreeJS();
         });
-        const particle = new THREE.Mesh(geometry, material);
-        
-        // Random position around the avatar
-        particle.position.set(
-          (Math.random() - 0.5) * 5,
-          Math.random() * 3,
-          (Math.random() - 0.5) * 5
-        );
-        
-        scene.add(particle);
-        
-        // Animate and remove
-        setTimeout(() => {
-          scene.remove(particle);
-        }, 2000);
-      }
-    }
-    
-    // Function to create username label
-    function createUsernameLabel(username) {
-      // Create canvas for text
-      const canvas = document.createElement('canvas');
-      const context = canvas.getContext('2d');
-      canvas.width = 256;
-      canvas.height = 64;
-      
-      // Set text style
-      context.fillStyle = 'white';
-      context.font = '24px Arial';
-      context.textAlign = 'center';
-      context.fillText(username, 128, 32);
-      
-      // Create texture from canvas
-      const texture = new THREE.CanvasTexture(canvas);
-      
-      // Create sprite material
-      const spriteMaterial = new THREE.SpriteMaterial({ 
-        map: texture,
-        transparent: true,
-        opacity: 0.8
-      });
-      
-      // Create sprite
-      const sprite = new THREE.Sprite(spriteMaterial);
-      sprite.scale.set(2, 0.5, 1);
-      sprite.position.set(0, 2, 0); // Position above avatar
-      
-      return sprite;
-    }
-    
-    // Function to update username label position
-    function updateUsernameLabel(username) {
-      if (nameLabels[username] && avatarModels[username]) {
-        const avatar = avatarModels[username].model;
-        const label = nameLabels[username];
-        
-        // Position label above avatar
-        label.position.set(
-          avatar.position.x,
-          avatar.position.y + 5,
-          avatar.position.z
-        );
-        
-        // Make label always face camera
-        label.lookAt(camera.position);
-      }
-    }
-    
-    // Function to add username label
-    function addUsernameLabel(username) {
-      // Only show labels for other users (not current user)
-      if (username !== currentUser) {
-        const label = createUsernameLabel(username);
-        nameLabels[username] = label;
-        scene.add(label);
-      }
-    }
-    
-    // Function to remove username label
-    function removeUsernameLabel(username) {
-      if (nameLabels[username]) {
-        scene.remove(nameLabels[username]);
-        delete nameLabels[username];
-      }
-    }
-    
-    // Modify the loadAvatarModel function to accept position
-    function loadAvatarModel(username, animationFile, position = null) {
-      const loader = new THREE.FBXLoader();
-      
-      loader.load(
-        animationFile,
-        (object) => {
-          try {
-            object.scale.set(1, 1, 1);
+
+        function initializeSocketConnection() {
+            socket = io();
             
-            // Material setup
-            object.traverse((child) => {
-              if (child.isMesh) {
-                child.material = new THREE.MeshStandardMaterial({
-                  color: username === currentUser ? 0xFFFF00 : 0x00FF00,
-                  roughness: 0.8
+            socket.on('connect', () => {
+                console.log('Connected to server');
+                updateConnectionStatus('Connected');
+            });
+
+            socket.on('disconnect', () => {
+                console.log('Disconnected from server');
+                updateConnectionStatus('Disconnected');
+            });
+
+            socket.on('registration_success', () => {
+                isRegistered = true;
+                showMainApp();
+                loadAvatar();
+            });
+
+            socket.on('registration_failed', (message) => {
+                showError(message);
+            });
+
+            socket.on('user_list', (users) => {
+                updateUserList(users);
+            });
+
+            socket.on('chat_message', (data) => {
+                addChatMessage(data.username, data.message);
+            });
+
+            socket.on('avatar_updated', (data) => {
+                if (currentMode === 'world' && data.username !== currentUsername) {
+                    updateOtherAvatar(data.username, data.animation);
+                }
+            });
+
+            socket.on('world_state', (worldState) => {
+                if (currentMode === 'world') {
+                    loadWorldState(worldState);
+                }
+            });
+
+            socket.on('special_effect', (data) => {
+                triggerSpecialEffect(data);
+            });
+
+            socket.on('user_disconnected', (username) => {
+                removeAvatar(username);
+                addChatMessage('System', `${username} left the world`);
+            });
+        }
+
+        function setupEventListeners() {
+            // Login form
+            loginForm.addEventListener('submit', handleLogin);
+            
+            // Mode toggle
+            document.getElementById('singleModeBtn').addEventListener('click', () => setMode('single'));
+            document.getElementById('worldModeBtn').addEventListener('click', () => setMode('world'));
+            
+            // Animation buttons
+            document.querySelectorAll('.animation-btn[data-animation]').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const animation = e.target.dataset.animation;
+                    changeAnimation(animation);
+                    updateAnimationButtons(e.target);
                 });
-              }
             });
+            
+            // Special effect buttons
+            document.getElementById('discoBtn').addEventListener('click', () => {
+                socket.emit('special_effect', { type: 'disco', intensity: 0.8 });
+            });
+            
+            document.getElementById('sparkleBtn').addEventListener('click', () => {
+                socket.emit('special_effect', { type: 'sparkle', intensity: 1.0 });
+            });
+            
+            document.getElementById('rainbowBtn').addEventListener('click', () => {
+                socket.emit('special_effect', { type: 'rainbow', intensity: 0.6 });
+            });
+            
+            // Chat
+            chatSend.addEventListener('click', sendChatMessage);
+            chatInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    sendChatMessage();
+                }
+            });
+            
+            // Logout
+            document.getElementById('logoutBtn').addEventListener('click', logout);
+            
+            // Window resize
+            window.addEventListener('resize', onWindowResize);
+        }
 
-            // Set position if provided
-            if (position) {
-              object.position.set(position.x, position.y, position.z);
+        function handleLogin(e) {
+            e.preventDefault();
+            const username = usernameInput.value.trim();
+            
+            if (username.length < 3 || username.length > 20) {
+                showError('Username must be 3-20 characters long');
+                return;
             }
+            
+            hideError();
+            currentUsername = username;
+            socket.emit('register', username);
+        }
 
-            // Create or update model
-            if (!avatarModels[username]) {
-              avatarModels[username] = { model: object, mixer: null, currentAnimation: animationFile };
+        function showMainApp() {
+            landingPage.style.display = 'none';
+            mainApp.style.display = 'block';
+            currentUsernameDisplay.textContent = currentUsername;
+            
+            // Add entrance animation
+            mainApp.classList.add('fade-in');
+            
+            // Initialize canvas size
+            setTimeout(() => {
+                onWindowResize();
+            }, 100);
+        }
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.classList.remove('hidden');
+        }
+
+        function hideError() {
+            errorMessage.classList.add('hidden');
+        }
+
+        function setMode(mode) {
+            if (mode === currentMode) return;
+            
+            currentMode = mode;
+            currentModeDisplay.textContent = mode === 'single' ? 'Single' : 'World';
+            
+            // Update mode buttons
+            document.querySelectorAll('.mode-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            if (mode === 'single') {
+                document.getElementById('singleModeBtn').classList.add('active');
             } else {
-              scene.remove(avatarModels[username].model);
-              avatarModels[username].model = object;
-              avatarModels[username].currentAnimation = animationFile;
+                document.getElementById('worldModeBtn').classList.add('active');
             }
             
-            scene.add(object);
-            addUsernameLabel(username);
+            socket.emit('set_mode', mode);
             
-            // Compute bounding box and width for dynamic spacing
-            const bbox = new THREE.Box3().setFromObject(object);
-            const size = new THREE.Vector3();
-            bbox.getSize(size);
-            const avatarWidth = size.x;
-            
-            // Send the measured width to server
-            socket.emit('avatar_width', { username: username, width: avatarWidth });
-            
-            // Animation setup
-            if (object.animations?.length > 0) {
-              avatarModels[username].mixer = new THREE.AnimationMixer(object);
-              const action = avatarModels[username].mixer.clipAction(object.animations[0]);
-              action.play();
+            if (mode === 'world') {
+                socket.emit('request_world_state');
+            } else {
+                clearOtherAvatars();
             }
-          } catch (error) {
-            console.error('Model processing error:', error);
-          }
-        },
-        (xhr) => {
-          const percent = (xhr.loaded / xhr.total) * 100;
-          updateStatus(`Loading ${username}: ${Math.round(percent)}%`, percent);
-        },
-        (error) => {
-          console.error(`Model load error for ${username}:`, error);
         }
-      );
-    }
-    
-    // Update status display
-    function updateStatus(msg, progress = null) {
-      const statusEl = document.getElementById('status');
-      const progressEl = document.getElementById('progress');
-      
-      if (statusEl) statusEl.textContent = msg;
-      if (progressEl && progress !== null) progressEl.value = progress;
-    }
-    
-    // Add to animation loop
-    function animate() {
-      requestAnimationFrame(animate);
-      
-      const delta = clock.getDelta();
-      
-      // Update all mixers
-      Object.values(avatarModels).forEach(avatar => {
-        if (avatar.mixer) {
-          avatar.mixer.update(delta);
+
+        function changeAnimation(animationFile) {
+            if (currentAvatar && mixer) {
+                loadAnimation(animationFile);
+                socket.emit('change_animation', animationFile);
+                
+                // Update display
+                const animationName = animationFile.replace('.fbx', '').replace(/([A-Z])/g, ' $1').trim();
+                currentAnimationDisplay.textContent = animationName;
+            }
         }
-      });
-      
-      // Update username label positions
-      Object.keys(nameLabels).forEach(username => {
-        updateUsernameLabel(username);
-      });
-      
-      // Animate disco lights if active
-      if (isDiscoMode) {
-        animateDiscoLights();
-      }
-      
-      // Send position updates (local user only)
-      if (currentUser && avatarModels[currentUser]) {
-        const model = avatarModels[currentUser].model;
-        const newPosition = model.position.clone();
-        
-        if (!lastPosition || lastPosition.distanceTo(newPosition) > 0.01) {
-          socket.emit('avatar_position', {
-            x: newPosition.x,
-            y: newPosition.y,
-            z: newPosition.z
-          });
-          lastPosition = newPosition;
-        }
-      }
-      
-      renderer.render(scene, camera);
-    }
-    
-    // Function to switch modes
-    function setMode(newMode) {
-      if (currentMode === newMode) return;
-      
-      currentMode = newMode;
-      
-      // Update UI elements
-      document.getElementById('world-mode-btn').classList.toggle('active', newMode === 'world');
-      document.getElementById('single-mode-btn').classList.toggle('active', newMode === 'single');
-      document.getElementById('mode-indicator').className = `mode-indicator ${newMode}`;
-      
-      // Notify server
-      socket.emit('set_mode', newMode);
-      
-      // Handle client-side changes
-      if (newMode === 'world') {
-        // Request fresh world state
-        socket.emit('request_world_state');
-        
-        // Reapply world mode positioning
-        Object.keys(avatarModels).forEach(username => {
-          if (username !== currentUser) {
-            socket.emit('request_user_position', username);
-          }
-        });
-      } else {
-        // Single mode - remove other avatars and reset current user position
-        Object.keys(avatarModels).forEach(username => {
-          if (username !== currentUser) {
-            scene.remove(avatarModels[username].model);
-            removeUsernameLabel(username);
-          }
-        });
-        
-        // Reset current user's avatar position to (0,0,0) in single mode
-        if (avatarModels[currentUser]) {
-          avatarModels[currentUser].model.position.set(0, 0, 0);
-        }
-      }
-    }
-    
-    // Function to show mode change notification
-    function showModeNotification(title, message) {
-      const notification = document.createElement('div');
-      notification.style.cssText = `
-        position: fixed;
-        top: 60px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: rgba(30, 30, 40, 0.9);
-        color: white;
-        padding: 15px 25px;
-        border-radius: 10px;
-        border-left: 5px solid ${currentMode === 'world' ? '#4CAF50' : '#FF9800'};
-        font-family: Arial, sans-serif;
-        z-index: 1000;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        text-align: center;
-        max-width: 300px;
-        animation: fadeInOut 5s forwards;
-      `;
-      
-      notification.innerHTML = `
-        <div style="font-weight: bold; font-size: 18px; margin-bottom: 5px;">${title}</div>
-        <div>${message}</div>
-      `;
-      
-      document.body.appendChild(notification);
-      
-      // Add CSS for animation
-      const style = document.createElement('style');
-      style.innerHTML = `
-        @keyframes fadeInOut {
-          0% { opacity: 0; top: 40px; }
-          10% { opacity: 1; top: 60px; }
-          90% { opacity: 1; top: 60px; }
-          100% { opacity: 0; top: 40px; }
-        }
-      `;
-      document.head.appendChild(style);
-      
-      // Remove after animation completes
-      setTimeout(() => {
-        if (notification.parentNode) {
-          notification.parentNode.removeChild(notification);
-        }
-      }, 5000);
-    }
-    
-    // Initialize the application
-    function init() {
-      initScene();
-      animate();
-      setupEventListeners();
-      
-      // Hide loading screen when ready
-      setTimeout(() => {
-        document.getElementById('loading').style.display = 'none';
-      }, 500);
-    }
-    
-    // Set up event listeners
-    function setupEventListeners() {
-      // Mode toggle buttons
-      document.getElementById('world-mode-btn').addEventListener('click', () => setMode('world'));
-      document.getElementById('single-mode-btn').addEventListener('click', () => setMode('single'));
-      
-      // Login button
-      document.getElementById('login-button').addEventListener('click', () => {
-        const username = document.getElementById('username-input').value.trim();
-        if (username) {
-          socket.emit('register', username);
-        }else {
-      // Show warning when no username is entered
-      const warningDiv = document.createElement('div');
-      warningDiv.style.cssText = `
-        position: fixed;
-        top: 30%;
-        left: 47.9%;
-        transform: translate(-50%, -50%);
-        background: rgba(128, 128, 128, 0.95); 
-        color: black;
-        padding: 5px 10px;
-        border-radius: 8px;
-        font-weight: bold;
-        z-index: 1000;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-      `;
-      const warningImage = document.createElement('img');
-      const spanText = document.createElement('span');
-      
-      warningImage.src = 'image.png'; // Fixed path - relative to HTML file
-      warningImage.style.width = '20px';
-      warningImage.style.height = '20px';
-      warningImage.style.marginRight = '8px';
-      warningImage.style.verticalAlign = 'middle';
-      
-      spanText.textContent = 'Please enter your Buddy Name';
 
-      warningDiv.appendChild(warningImage);
-      warningDiv.appendChild(spanText);
-
-      document.body.appendChild(warningDiv);
-
-// Remove warning after 3 seconds
-      setTimeout(() => {
-      if (warningDiv.parentNode) {
-          warningDiv.parentNode.removeChild(warningDiv);
-        }
-        }, 3000);
-
-          }
-        });
-      
-      // Dance move buttons
-      document.querySelectorAll('#controls button[data-animation]').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const animationFile = btn.getAttribute('data-animation');
-          socket.emit('change_animation', animationFile);
-        });
-      });
-      
-      // Chat send button
-      document.getElementById('send-button').addEventListener('click', sendChatMessage);
-      document.getElementById('chat-input').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') sendChatMessage();
-      });
-      
-      // AI Chat send button
-      document.getElementById('ai-send-button').addEventListener('click', sendAIChatMessage);
-      document.getElementById('ai-chat-input').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') sendAIChatMessage();
-      });
-     
-
-document.getElementById('info-panel').addEventListener('click', () => {
-  document.getElementById('info-content').style.display = 'block';
-});
-
-document.getElementById('close-info').addEventListener('click', () => {
-  document.getElementById('info-content').style.display = 'none';
-});
-
-// Close info panel when clicking outside
-document.addEventListener('click', (e) => {
-  const infoContent = document.getElementById('info-content');
-  if (infoContent.style.display === 'block' && 
-      !e.target.closest('#info-content') && 
-      e.target.id !== 'info-panel') {
-    infoContent.style.display = 'none';
-  }
-});
-      
-      // Socket.io events
-      socket.on('registration_success', () => {
-        currentUser = document.getElementById('username-input').value.trim();
-        document.getElementById('login-panel').style.display = 'none';
-        document.getElementById('social-panel').style.display = 'block';
-        document.getElementById('chat-panel').style.display = 'block';
-        document.getElementById('ai-chat-panel').style.display = 'block';
-        document.getElementById('mode-toggle-container').style.display = 'flex';
-        // Info panel functionality
-
-        
-        // Load default avatar
-        loadAvatarModel(currentUser, 'Standing Idle.fbx');
-
-        // Remove the mobile-login-active class so UI panels show up
-        document.body.classList.remove('mobile-login-active');
-
-        // After showing the AI chat panel, add this line:
-        document.getElementById('ai-chat-messages').innerHTML = '<div class="message ai-message"><strong>Buddy:</strong> Welcome to Buddyyy</div>';
-      });
-      
-      socket.on('registration_failed', (msg) => {
-        alert(`Registration failed: ${msg}`);
-      });
-      
-      socket.on('user_list', (users) => {
-        const userListEl = document.getElementById('user-list');
-        userListEl.innerHTML = '';
-        
-        users.forEach(user => {
-          if (user !== currentUser) {
-            const userItem = document.createElement('div');
-            userItem.className = 'user-item';
-            userItem.textContent = user;
-            userItem.addEventListener('click', () => {
-              document.querySelectorAll('.user-item').forEach(item => {
-                item.classList.remove('selected');
-              });
-              userItem.classList.add('selected');
-              selectedUser = user;
+        function updateAnimationButtons(activeBtn) {
+            document.querySelectorAll('.animation-btn[data-animation]').forEach(btn => {
+                btn.classList.remove('active');
             });
-            userListEl.appendChild(userItem);
-          }
-        });
-      });
-      
-      // Add to socket event listeners
-      socket.on('world_state', async (worldState) => {
-        if (currentMode !== 'world') return;
-        
-        const loadPromises = Object.entries(worldState)
-          .filter(([username]) => username !== currentUser)
-          .map(([username, userData]) => 
-            loadAvatarModel(username, userData.animation, userData.position)
-          );
-        
-        await Promise.all(loadPromises);
-        updateDebugLabels();
-      });
+            activeBtn.classList.add('active');
+        }
 
-      // Update avatar_updated handler
-      socket.on('avatar_updated', (data) => {
-        // Process updates for our own avatar in any mode
-        // Process updates for others only in world mode
-        if (data.username !== currentUser && currentMode !== 'world') return;
-        
-        console.log(`Avatar updated for ${data.username} to ${data.animation}`);
-        
-        // Don't activate disco mode if this is triggered by the timer
-        if (isAnimationTimerActive && data.animation === 'Chicken Dance.fbx') {
-          console.log('Skipping disco mode activation (timer reset)');
-        } else {
-          // Check if anyone is doing chicken dance to activate disco mode
-          let hasChickenDance = false;
-          Object.values(avatarModels).forEach(avatar => {
-            if (avatar.currentAnimation === 'Chicken Dance.fbx') {
-              hasChickenDance = true;
+        function sendChatMessage() {
+            const message = chatInput.value.trim();
+            if (message && isRegistered) {
+                socket.emit('chat_message', { message });
+                chatInput.value = '';
             }
-          });
-          
-          // Check if the new animation is chicken dance
-          if (data.animation === 'Chicken Dance.fbx') {
-            hasChickenDance = true;
-          }
-          
-          // Toggle disco mode based on chicken dance presence
-          if (hasChickenDance && !isDiscoMode) {
-            isDiscoMode = true;
-            createDiscoLights();
-            console.log('Disco mode activated! 🕺');
-          } else if (!hasChickenDance && isDiscoMode) {
-            isDiscoMode = false;
-            removeDiscoLights();
-            console.log('Disco mode deactivated! 😴');
-          }
         }
-        
-        if (avatarModels[data.username]) {
-          const avatar = avatarModels[data.username];
-          
-          // Store current animation
-          avatar.currentAnimation = data.animation;
-          
-          // 1. Stop current animation
-          if (avatar.mixer) {
-            avatar.mixer.stopAllAction();
-          }
-          
-          // 2. Load new animation without replacing the entire model
-          const loader = new THREE.FBXLoader();
-          loader.load(
-            data.animation,
-            (animObject) => {
-              // 3. Transfer animations to existing model
-              avatar.model.animations = animObject.animations;
-              
-              // 4. Recreate mixer with new animations
-              avatar.mixer = new THREE.AnimationMixer(avatar.model);
-              
-              // 5. Play animation if available
-              if (animObject.animations && animObject.animations.length > 0) {
-                const action = avatar.mixer.clipAction(animObject.animations[0]);
-                action.play();
-                console.log(`Playing ${data.animation} for ${data.username}`);
-              }
-              
-              // 6. Clean up temp object
-              animObject = null;
-            },
-            undefined,
-            (error) => console.error('Animation load error:', error)
-          );
-        } else {
-          // Load new avatar if it doesn't exist
-          loadAvatarModel(data.username, data.animation);
-        }
-      });
-      
-      socket.on('chat_message', (data) => {
-        const chatMessages = document.getElementById('chat-messages');
-        const messageEl = document.createElement('div');
-        messageEl.className = 'message';
-        messageEl.innerHTML = `<strong>${data.username}:</strong> ${data.message}`;
-        chatMessages.appendChild(messageEl);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-      });
-      
-      // Handle user disconnections
-      socket.on('user_disconnected', (username) => {
-        // Only process if in world mode
-        if (currentMode !== 'world') return;
-        
-        if (avatarModels[username]) {
-          scene.remove(avatarModels[username].model);
-          delete avatarModels[username];
-        }
-        
-        // Remove username label
-        removeUsernameLabel(username);
-        
-        // Update UI
-        const userItems = document.querySelectorAll('.user-item');
-        userItems.forEach(item => {
-          if (item.textContent === username) {
-            item.remove();
-          }
-        });
-      });
 
-      // Handle position updates from server
-      socket.on('avatar_position_update', async (data) => {
-        // Only process if in world mode
-        if (currentMode !== 'world') return;
-        
-        if (avatarModels[data.username]) {
-          avatarModels[data.username].model.position.set(
-            data.position.x,
-            data.position.y,
-            data.position.z
-          );
-        } else {
-          await loadAvatarModel(data.username, 'Standing Idle.fbx', data.position);
+        function addChatMessage(username, message) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'chat-message';
+            
+            const usernameDiv = document.createElement('div');
+            usernameDiv.className = 'chat-username';
+            usernameDiv.textContent = username;
+            
+            const textDiv = document.createElement('div');
+            textDiv.className = 'chat-text';
+            textDiv.textContent = message;
+            
+            messageDiv.appendChild(usernameDiv);
+            messageDiv.appendChild(textDiv);
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            // Remove old messages if too many
+            while (chatMessages.children.length > 50) {
+                chatMessages.removeChild(chatMessages.firstChild);
+            }
         }
-        updateDebugLabels();
-      });
-      
-      // Add this to socket.io events
-      socket.on('special_effect', (data) => {
-        if (data.type === 'disco') {
-          if (!isDiscoMode) {
-            isDiscoMode = true;
-            createDiscoLights();
-            console.log('Disco mode activated!');
-          }
-          
-          // Add some particles for fun
-          createDanceParticles(data.intensity);
-        }
-      });
-      
-      // Add new event to handle mode changes from server
-      socket.on('user_mode_changed', (data) => {
-        // If someone else switched to single mode, remove their avatar
-        if (data.mode === 'single' && data.username !== currentUser) {
-          if (avatarModels[data.username]) {
-            scene.remove(avatarModels[data.username].model);
-            delete avatarModels[data.username];
-          }
-          removeUsernameLabel(data.username);
-        }
-      });
-      
-      // Add new socket listener for position requests
-      socket.on('user_position_response', (data) => {
-        if (currentMode !== 'world') return;
-        
-        if (avatarModels[data.username]) {
-          avatarModels[data.username].model.position.set(
-            data.position.x,
-            data.position.y,
-            data.position.z
-          );
-        }
-      });
 
-      // Panel toggle functionality
-      document.getElementById('social-panel').addEventListener('click', toggleSocialPanel);
-      document.getElementById('chat-panel').addEventListener('click', toggleChatPanel);
-      
-      // Prevent chat input and send button from toggling the panel
-      document.getElementById('chat-input').addEventListener('click', (e) => {
-        e.stopPropagation();
-      });
-      
-      document.getElementById('send-button').addEventListener('click', (e) => {
-        e.stopPropagation();
-      });
-      
-      // Prevent user list clicks from toggling the social panel
-      document.getElementById('user-list').addEventListener('click', (e) => {
-        e.stopPropagation();
-      });
-    }
-    
-    // Send chat message
-    function sendChatMessage() {
-      const input = document.getElementById('chat-input');
-      const message = input.value.trim();
-      
-      if (message && currentUser) {
-        socket.emit('chat_message', {
-          username: currentUser,
-          message: message
-        });
-        input.value = '';
-      }
-    }
-    
-    // Add this new function
-    function sendAIChatMessage() {
-      const input = document.getElementById('ai-chat-input');
-      const message = input.value.trim();
-      
-      if (!message) return;
-      
-      // Create user message in AI chat
-      addAIChatMessage(message, true);
-      input.value = '';
-      
-      // Check for animation commands
-      const lowerMsg = message.toLowerCase();
-      let commandFound = false;
-      
-      for (const [keyword, cmd] of Object.entries(animationCommands)) {
-        if (lowerMsg.includes(keyword)) {
-          commandFound = true;
-          console.log(`Dance command: ${cmd}`);
-          triggerAnimation(cmd);
-          
-          // Add auto-response based on command
-          const responses = {
-            'C': "*starts dancing* Let's groove! 💃",
-            'J': "*jumps excitedly* Wheee! 🤸",
-            'L': "*lays down* Ahh, this is relaxing... 😌",
-            'S': "*laughs heartily* That was funny! 🤣",
-            'H': "*waves happily* Hello there! 👋"
-          };
-          
-          setTimeout(() => {
-            addAIChatMessage(responses[cmd], false);
-          }, 1000);
-          break;
+        function updateUserList(users) {
+            userList.innerHTML = '';
+            userCount.textContent = users.length;
+            
+            users.forEach(username => {
+                const userDiv = document.createElement('div');
+                userDiv.className = 'user-item';
+                
+                const avatarDiv = document.createElement('div');
+                avatarDiv.className = 'user-avatar';
+                avatarDiv.textContent = username.charAt(0).toUpperCase();
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'user-name';
+                nameDiv.textContent = username;
+                
+                userDiv.appendChild(avatarDiv);
+                userDiv.appendChild(nameDiv);
+                userList.appendChild(userDiv);
+            });
         }
-      }
-      
-      // If no command found, send to AI
-      if (!commandFound) {
-        fetchAIResponse(message);
-      }
-    }
-    
-    // Add this function
-    function addAIChatMessage(text, isUser) {
-      const chatMessages = document.getElementById('ai-chat-messages');
-      const messageEl = document.createElement('div');
-      messageEl.className = isUser ? 'message' : 'message ai-message';
-      messageEl.innerHTML = isUser 
-        ? `<strong>You:</strong> ${text}`
-        : `<strong>Buddy:</strong> ${text}`;
-      chatMessages.appendChild(messageEl);
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
-    
-    // Add this function
-    function fetchAIResponse(message) {
-  console.log("Sending AI request to:", "https://newone-yzub.onrender.com/chatbot/");
-  console.log("Message:", message);
-  
-  fetch("https://newone-yzub.onrender.com/chatbot/", {
-    method: "POST",
-    mode: "cors",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ message })
-  })
-      .then(response => {
-        console.log("Response status:", response.status);
-        console.log("Response headers:", response.headers);
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then(data => {
-        console.log("AI Response data:", data);
-        // Add text response to chat
-        addAIChatMessage(data.reply, false);
-        
-        // Check for bracketed animation commands in the response
-        const responseText = data.reply;
-        if (responseText.includes('[L]')) {
-          triggerAnimation('L');
-        } else if (responseText.includes('[C]')) {
-          triggerAnimation('C');
-        } else if (responseText.includes('[J]')) {
-          triggerAnimation('J');
-        } else if (responseText.includes('[S]')) {
-          triggerAnimation('S');
-        } else if (responseText.includes('[H]')) {
-          triggerAnimation('H');
-        }
-        
-        // Trigger animation if provided
-        if (data.animation) {
-          triggerAnimation(data.animation);
-        }
-      })
-      .catch(error => {
-        console.error("AI Error:", error);
-        addAIChatMessage("Buddy is resting right now... Error: " + error.message, false);
-      });
-    }
-    
-    // Add this function
-    function triggerAnimation(cmd) {
-  const animationMap = {
-    'C': 'Chicken Dance.fbx',
-    'J': 'Jumping Down.fbx',
-    'L': 'Laying.fbx',
-    'S': 'Sitting Laughing.fbx',
-    'H': 'Standing Greeting.fbx',
-    'I': 'Standing Idle.fbx'
-  };
-  
-  const animFile = animationMap[cmd];
-  if (animFile) {
-    // Clear any existing timers
-    if (window.animationResetTimer) {
-      clearTimeout(window.animationResetTimer);
-    }
-    
-    // Play animation immediately (local fallback)
-    playLocalAnimation(currentUser, animFile);
-    
-    // Also send to server (for world mode)
-    socket.emit('change_animation', animFile);
-    
-    // Set timer to return to idle
-    const animationDurations = {
-      'H': 5000, 'C': 8000, 'J': 3000, 
-      'L': 10000, 'S': 8000
-    };
-    
-    const duration = animationDurations[cmd];
-    if (duration) {
-      window.animationResetTimer = setTimeout(() => {
-        playLocalAnimation(currentUser, 'Standing Idle.fbx');
-        socket.emit('change_animation', 'Standing Idle.fbx');
-      }, duration);
-    }
-  }
-}
 
-// Add this new function for local animation handling
-function playLocalAnimation(username, animationFile) {
-  const avatar = avatarModels[username];
-  if (!avatar) return;
-
-  // Stop current animation
-  if (avatar.mixer) {
-    avatar.mixer.stopAllAction();
-  }
-
-  // Load new animation
-  const loader = new THREE.FBXLoader();
-  loader.load(
-    animationFile,
-    (animObject) => {
-      avatar.model.animations = animObject.animations;
-      avatar.mixer = new THREE.AnimationMixer(avatar.model);
-      if (animObject.animations?.length > 0) {
-        const action = avatar.mixer.clipAction(animObject.animations[0]);
-        action.play();
-      }
-    },
-    undefined,
-    (error) => console.error('Animation load error:', error)
-  );
-}
-    
-    // Add this utility function
-    function getCSRFToken() {
-      const name = "csrftoken";
-      const cookies = document.cookie.split(";");
-      for (let c of cookies) {
-        const trimmed = c.trim();
-        if (trimmed.startsWith(name + "=")) {
-          return decodeURIComponent(trimmed.split("=")[1]);
+        function updateConnectionStatus(status) {
+            connectionStatus.textContent = status;
+            connectionStatus.style.color = status === 'Connected' ? 'var(--success)' : 'var(--error)';
         }
-      }
-      return "";
-    }
-    
-    // Panel toggle functions
-    function toggleSocialPanel() {
-      const panel = document.getElementById('social-panel');
-      const content = document.getElementById('social-content');
-      const chatPanel = document.getElementById('chat-panel');
-      const chatContent = document.getElementById('chat-content');
-      
-      // Toggle social panel
-      if (content.classList.contains('show')) {
-        content.classList.remove('show');
-        panel.classList.remove('expanded');
-      } else {
-        content.classList.add('show');
-        panel.classList.add('expanded');
-        // Close chat panel if open
-        chatContent.classList.remove('show');
-        chatPanel.classList.remove('expanded');
-      }
-    }
-    
-    function toggleChatPanel() {
-      const panel = document.getElementById('chat-panel');
-      const content = document.getElementById('chat-content');
-      const socialPanel = document.getElementById('social-panel');
-      const socialContent = document.getElementById('social-content');
-      
-      // Toggle chat panel
-      if (content.classList.contains('show')) {
-        content.classList.remove('show');
-        panel.classList.remove('expanded');
-      } else {
-        content.classList.add('show');
-        panel.classList.add('expanded');
-        // Close social panel if open
-        socialContent.classList.remove('show');
-        socialPanel.classList.remove('expanded');
-      }
-    }
-    
-    // Start the application when DOM is loaded
-    document.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('world-mode-btn').classList.remove('active');
-      document.getElementById('single-mode-btn').classList.add('active');
-      document.getElementById('mode-indicator').className = 'mode-indicator single';
-      init();
-    });
-  </script>
+
+        function triggerSpecialEffect(data) {
+            const canvas = document.getElementById('canvas');
+            
+            switch (data.type) {
+                case 'disco':
+                    canvas.classList.add('disco-mode');
+                    setTimeout(() => {
+                        canvas.classList.remove('disco-mode');
+                    }, 3000);
+                    break;
+                    
+                case 'sparkle':
+                    // Add sparkle effect
+                    createSparkleEffect();
+                    break;
+                    
+                case 'rainbow':
+                    // Add rainbow effect
+                    createRainbowEffect();
+                    break;
+            }
+        }
+
+        function createSparkleEffect() {
+            const canvas = document.getElementById('canvas');
+            const rect = canvas.getBoundingClientRect();
+            
+            for (let i = 0; i < 20; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.style.position = 'absolute';
+                sparkle.style.left = Math.random() * rect.width + 'px';
+                sparkle.style.top = Math.random() * rect.height + 'px';
+                sparkle.style.width = '4px';
+                sparkle.style.height = '4px';
+                sparkle.style.background = 'white';
+                sparkle.style.borderRadius = '50%';
+                sparkle.style.pointerEvents = 'none';
+                sparkle.style.animation = 'sparkle 1s ease-out forwards';
+                
+                canvas.parentElement.appendChild(sparkle);
+                
+                setTimeout(() => {
+                    sparkle.remove();
+                }, 1000);
+            }
+        }
+
+        function createRainbowEffect() {
+            const canvas = document.getElementById('canvas');
+            canvas.style.filter = 'hue-rotate(0deg)';
+            
+            let hue = 0;
+            const interval = setInterval(() => {
+                hue += 10;
+                canvas.style.filter = `hue-rotate(${hue}deg)`;
+                
+                if (hue >= 360) {
+                    clearInterval(interval);
+                    canvas.style.filter = 'none';
+                }
+            }, 50);
+        }
+
+        function logout() {
+            if (socket) {
+                socket.disconnect();
+            }
+            
+            // Reset state
+            isRegistered = false;
+            currentUsername = '';
+            currentMode = 'single';
+            
+            // Show landing page
+            mainApp.style.display = 'none';
+            landingPage.style.display = 'flex';
+            
+            // Clear form
+            usernameInput.value = '';
+            hideError();
+            
+            // Reconnect socket
+            setTimeout(() => {
+                initializeSocketConnection();
+            }, 500);
+        }
+
+        // Three.js functions (simplified for this example)
+        function initializeThreeJS() {
+            const canvas = document.getElementById('canvas');
+            
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x1a1a1a);
+            
+            camera = new THREE.PerspectiveCamera(75, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
+            camera.position.set(0, 1.6, 3);
+            
+            renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+            renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            
+            // Add lights
+            const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
+            scene.add(ambientLight);
+            
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(5, 10, 5);
+            directionalLight.castShadow = true;
+            scene.add(directionalLight);
+            
+            clock = new THREE.Clock();
+            
+            animate();
+        }
+
+        function loadAvatar() {
+            // Simplified avatar loading
+            const geometry = new THREE.BoxGeometry(1, 2, 0.5);
+            const material = new THREE.MeshLambertMaterial({ color: 0x6366f1 });
+            currentAvatar = new THREE.Mesh(geometry, material);
+            currentAvatar.position.set(0, 1, 0);
+            currentAvatar.castShadow = true;
+            scene.add(currentAvatar);
+        }
+
+        function loadAnimation(animationFile) {
+            // Simplified animation system
+            console.log('Loading animation:', animationFile);
+        }
+
+        function loadWorldState(worldState) {
+            // Simplified world state loading
+            console.log('Loading world state:', worldState);
+        }
+
+        function updateOtherAvatar(username, animation) {
+            // Simplified other avatar updates
+            console.log('Updating avatar:', username, animation);
+        }
+
+        function removeAvatar(username) {
+            // Simplified avatar removal
+            console.log('Removing avatar:', username);
+        }
+
+        function clearOtherAvatars() {
+            // Simplified avatar clearing
+            console.log('Clearing other avatars');
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            const delta = clock.getDelta();
+            
+            if (mixer) {
+                mixer.update(delta);
+            }
+            
+            // Simple rotation animation for demo
+            if (currentAvatar) {
+                currentAvatar.rotation.y += 0.01;
+            }
+            
+            renderer.render(scene, camera);
+        }
+
+        function onWindowResize() {
+            const canvas = document.getElementById('canvas');
+            const rect = canvas.getBoundingClientRect();
+            
+            camera.aspect = rect.width / rect.height;
+            camera.updateProjectionMatrix();
+            
+            renderer.setSize(rect.width, rect.height);
+        }
+
+        // Add sparkle animation keyframes
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes sparkle {
+                0% {
+                    opacity: 0;
+                    transform: scale(0) rotate(0deg);
+                }
+                50% {
+                    opacity: 1;
+                    transform: scale(1) rotate(180deg);
+                }
+                100% {
+                    opacity: 0;
+                    transform: scale(0) rotate(360deg);
+                }
+            }
+            
+            .status-info {
+                display: flex;
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+            
+            .status-item {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            
+            .status-label {
+                color: var(--text-secondary);
+                font-size: 0.9rem;
+            }
+            
+            .status-value {
+                color: var(--text-primary);
+                font-weight: 500;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
 </body>
-</html> 
+</html>
