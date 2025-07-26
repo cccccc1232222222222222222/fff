@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: buddy-server
+    env: node
+    buildCommand: npm install
+    startCommand: npm start
+    port: 3000

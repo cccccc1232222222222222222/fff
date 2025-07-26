@@ -1,0 +1,15 @@
+{
+  "name": "buddy",
+  "version": "1.0.0",
+  "description": "Buddy.io",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "require": "^2.4.20",
+    "socket.io": "^4.8.1",
+    "three-fbx-loader": "^1.0.3"
+  }
+}
